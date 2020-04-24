@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -39,6 +40,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
     private FirebaseAnalytics mFirebaseAnalytics;
     ImageView imageView1, imageView2;
+    TextView tap1, tap2;
 
     boolean i1 = false;
     boolean i2 = false;
@@ -76,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         imageView1 =  findViewById(R.id.input1);
         imageView2 =  findViewById(R.id.input2);
+        tap1 = findViewById(R.id.tap1);
+        tap2 = findViewById(R.id.tap2);
     }
 
     public void onResume()
@@ -159,12 +163,14 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
                 if (i1){
+                    tap1.setVisibility(View.GONE);
                     i1=false;
                     i2=true;
                     imageView1.setImageBitmap(convetUriToBitmap(resultUri,1));
                     img = new Mat();
                     Utils.bitmapToMat(convetUriToBitmap(resultUri,1),img,true);
                 }else {
+                    tap2.setVisibility(View.GONE);
                     i1=true;
                     i2=false;
                     imageView2.setImageBitmap(convetUriToBitmap(resultUri,2));

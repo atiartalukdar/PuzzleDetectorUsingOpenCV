@@ -20,13 +20,30 @@
             android:layout_height="wrap_content"
             android:text="Raw image"></TextView>
 
-        <ImageView
-            android:id="@+id/input1"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:onClick="input1Onclick"
             android:layout_height="match_parent">
 
-        </ImageView>
+            <TextView
+                android:id="@+id/tap1"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="Please tap here to select">
+
+            </TextView>
+
+            <ImageView
+                android:id="@+id/input1"
+                android:layout_width="match_parent"
+                android:onClick="input1Onclick"
+                android:layout_height="match_parent">
+
+            </ImageView>
+
+        </FrameLayout>
+
 
     </LinearLayout>
 
@@ -42,16 +59,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Template need to match"></TextView>
+            android:text="Template need to match">
 
-        <ImageView
-            android:id="@+id/input2"
-            android:onClick="input2Onclick"
+        </TextView>
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
-        </ImageView>
+
+            <ImageView
+                android:id="@+id/input2"
+                android:onClick="input2Onclick"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </ImageView>
+
+            <TextView
+                android:id="@+id/tap2"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="Please tap here to select">
+
+            </TextView>
+
+        </FrameLayout>
+
 
 
 
