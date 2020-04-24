@@ -120,11 +120,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (img.height()<=0 || img.width() <=0){
+        if (img == null || img.height()<=0 || img.width() <=0){
             BP.showDialog(this,"Please insert valid raw image.");
             return;
         }
-        if (templ.height()<=0 || templ.width() <=0){
+
+        if (templ ==  null || templ.height()<=0 || templ.width() <=0){
             BP.showDialog(this,"Please insert valid template image.");
             return;
         }
