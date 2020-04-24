@@ -109,12 +109,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void findCurrectLocation(View view) {
 
-        BP.showDialog(MainActivity.this,"Please wait...");
+
+        if (img==null){
+            BP.showDialog(this,"Please insert valid raw image.");
+            return;
+        }
+
+        if (templ==null){
+            BP.showDialog(this,"Please insert valid template image.");
+            return;
+        }
+
+        if (img.height()<=0 || img.width() <=0){
+            BP.showDialog(this,"Please insert valid raw image.");
+            return;
+        }
+        if (templ.height()<=0 || templ.width() <=0){
+            BP.showDialog(this,"Please insert valid template image.");
+            return;
+        }
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 new MatchingDemo().run(Imgproc.TM_CCOEFF);
             }
         });
@@ -219,8 +236,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showImg(Mat img) {
-        BP.alert.dismiss();
-
         final Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(),Bitmap.Config.RGB_565);
         Utils.matToBitmap(img, bm);
         final ImageView imageView = (ImageView) findViewById(R.id.input1);
@@ -232,9 +247,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    public Bitmap decodeSampledBitmapFromUri(Uri uri,
-                                                    int minReqSize) throws FileNotFoundException {
+    public Bitmap decodeSampledBitmapFromUri(Uri uri, int minReqSize) throws FileNotFoundException {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         // First decode with inJustDecodeBounds=true to check dimensions

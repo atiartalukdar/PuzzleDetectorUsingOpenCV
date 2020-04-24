@@ -31,16 +31,4 @@ public class BP {
         alert.show();
         return alert;
     }
-    public static KProgressHUD showProgressDialog(Activity activity, String description){
-        KProgressHUD kProgressHUD = KProgressHUD.create(activity)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait ...")
-                .setDetailsLabel(description)
-                .setCancellable(true)
-                .setAnimationSpeed(1)
-                .setDimAmount(0.5f)
-                .show();
-        return kProgressHUD;
-    }
-
 }
