@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:background="@color/colorInput1"
-        android:layout_weight="2">
+        android:layout_weight="3">
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:background="@color/colorInput2"
-        android:layout_weight="1">
+        android:layout_weight="2">
 
 
         <TextView
@@ -54,34 +54,24 @@
         </ImageView>
 
 
-        <LinearLayout
+
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:layout_gravity="bottom"
-            android:orientation="horizontal">
+            android:text="find currect place"
+            android:onClick="findCurrectLocation"
+            android:id="@+id/findCorrectPlace">
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="wrap_content"
-                android:text="find currect place"
-                android:onClick="findCurrectLocation"
-                android:id="@+id/findCorrectPlace">
+        </Button>
 
-            </Button>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:onClick="reset"
+            android:id="@+id/reset">
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Reset"
-                android:onClick="reset"
-                android:id="@+id/reset">
-
-            </Button>
-
-        </LinearLayout>
+        </Button>
 
 
     </LinearLayout>

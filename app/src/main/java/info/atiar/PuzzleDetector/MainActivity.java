@@ -1,10 +1,15 @@
 package info.atiar.PuzzleDetector;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,6 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -30,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+    private FirebaseAnalytics mFirebaseAnalytics;
     ImageView imageView1, imageView2;
 
     boolean i1 = false;
@@ -62,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         OpenCVLoader.initDebug();
         setContentView(R.layout.activity_main1);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         imageView1 =  findViewById(R.id.input1);
         imageView2 =  findViewById(R.id.input2);
     }
@@ -97,10 +109,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void findCurrectLocation(View view) {
 
+        BP.showDialog(MainActivity.this,"Please wait...");
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
 
                 new MatchingDemo().run(Imgproc.TM_CCOEFF);
             }
@@ -130,15 +143,15 @@ public class MainActivity extends AppCompatActivity {
                 if (i1){
                     i1=false;
                     i2=true;
-                    imageView1.setImageBitmap(convetUriToBitmap(resultUri));
+                    imageView1.setImageBitmap(convetUriToBitmap(resultUri,1));
                     img = new Mat();
-                    Utils.bitmapToMat(convetUriToBitmap(resultUri),img,true);
+                    Utils.bitmapToMat(convetUriToBitmap(resultUri,1),img,true);
                 }else {
                     i1=true;
                     i2=false;
-                    imageView2.setImageBitmap(convetUriToBitmap(resultUri));
+                    imageView2.setImageBitmap(convetUriToBitmap(resultUri,2));
                     templ = new Mat();
-                    Utils.bitmapToMat(convetUriToBitmap(resultUri),templ,true);
+                    Utils.bitmapToMat(convetUriToBitmap(resultUri,2),templ,true);
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
@@ -148,11 +161,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public Bitmap convetUriToBitmap(Uri uri){
+    public Bitmap convetUriToBitmap(Uri uri, int inpurFrom){
         Bitmap convertedBitmap = null;
 
         try {
-            convertedBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),uri);
+            if (inpurFrom==1){
+                convertedBitmap = decodeSampledBitmapFromUri(uri,500);
+            }else {
+                convertedBitmap = decodeSampledBitmapFromUri(uri,80);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -166,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
     public class MatchingDemo {
 
         public void run(int match_method) {
-
             System.out.println("\nRunning Template Matching");
             Log.e("atiar - ", "img height = " + img.height() + " img width = " + img.width());
             Log.e("atiar - ", "templ height = " + templ.height() + " temol width = " + templ.width());
@@ -194,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
             // / Show me what you got
             Imgproc.rectangle(img, matchLoc, new Point(matchLoc.x + templ.cols(),
-                    matchLoc.y + templ.rows()), new Scalar(0, 0, 255),3);
+                    matchLoc.y + templ.rows()), new Scalar(0, 0, 255),4);
 
             //print the output file.
             showImg(img);
@@ -203,6 +219,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showImg(Mat img) {
+        BP.alert.dismiss();
+
         final Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(),Bitmap.Config.RGB_565);
         Utils.matToBitmap(img, bm);
         final ImageView imageView = (ImageView) findViewById(R.id.input1);
@@ -213,4 +231,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    public Bitmap decodeSampledBitmapFromUri(Uri uri,
+                                                    int minReqSize) throws FileNotFoundException {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        // First decode with inJustDecodeBounds=true to check dimensions
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(getContentResolver()
+                .openInputStream(uri), null, options);
+        // The new size we want to scale to
+        final int REQUIRED_SIZE = minReqSize;
+
+        // Find the correct scale value. It should be the power of 2.
+        int width_tmp = options.outWidth, height_tmp = options.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < REQUIRED_SIZE
+                    || height_tmp / 2 < REQUIRED_SIZE) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+
+        return BitmapFactory.decodeStream(getContentResolver()
+                .openInputStream(uri), null, o2);
+    }
+
 }

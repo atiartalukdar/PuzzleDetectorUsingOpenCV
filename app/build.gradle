@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 28
@@ -29,7 +31,16 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':openCVLibrary343')
 
+    //firebase implementations
+    implementation 'com.google.firebase:firebase-core:17.3.0'
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta04'
+
     //image croper library
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+
+    //Prograss dialog
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
+
 
 }
