@@ -32,6 +32,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.FileNotFoundException;
@@ -134,10 +135,18 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+/*
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 new MatchingDemo().run(Imgproc.TM_CCOEFF);
+            }
+        });
+*/
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new MatchingDemo().run();
             }
         });
 
@@ -148,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
 
     //Image picker with croper feature.
     public void opengalary() {
@@ -169,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     imageView1.setImageBitmap(convetUriToBitmap(resultUri,1));
                     img = new Mat();
                     Utils.bitmapToMat(convetUriToBitmap(resultUri,1),img,true);
+
                 }else {
                     tap2.setVisibility(View.GONE);
                     i1=true;
@@ -183,8 +192,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     public Bitmap convetUriToBitmap(Uri uri, int inpurFrom){
         Bitmap convertedBitmap = null;
 
@@ -192,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             if (inpurFrom==1){
                 convertedBitmap = decodeSampledBitmapFromUri(uri,500);
             }else {
-                convertedBitmap = decodeSampledBitmapFromUri(uri,80);
+                convertedBitmap = decodeSampledBitmapFromUri(uri,110);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -204,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //OpenCV class is responsible for Template Matching
-    public class MatchingDemo {
+    /*    public class MatchingDemo {
 
         public void run(int match_method) {
             System.out.println("\nRunning Template Matching");
@@ -238,6 +245,30 @@ public class MainActivity extends AppCompatActivity {
 
             //print the output file.
             showImg(img);
+        }
+    }*/
+
+    public class MatchingDemo {
+
+        public void run() {
+            //Load image file
+            Mat source=img.clone();
+            Mat template=templ.clone();
+
+            Mat outputImage=new Mat();
+            int machMethod= Imgproc.TM_CCOEFF;
+
+            //Template matching method
+            Imgproc.matchTemplate(source, template, outputImage, machMethod);
+
+            Core.MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
+            Point matchLoc=mmr.maxLoc;
+
+            //Draw rectangle on result image
+            Imgproc.rectangle(source, matchLoc, new Point(matchLoc.x + template.cols(),
+                        matchLoc.y + template.rows()), new Scalar(0, 0, 255),10);
+
+            showImg(source);
 
         }
     }
